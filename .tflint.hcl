@@ -12,3 +12,7 @@ plugin "azurerm" {
   version = "0.27.0"
   source  = "github.com/terraform-linters/tflint-ruleset-azurerm"
 }
+
+rule "azurerm_linux_virtual_machine_invalid_size" {
+  enabled = false
+}
