@@ -124,6 +124,58 @@ terraform plan -var="admin_ssh_public_key=$(cat ~/.ssh/id_rsa.pub)"
 
 Repeat with `prod` for the production workspace.
 
+## Destroying An Environment
+
+Destroy uses the same backend and the same Terraform workspace that was used to create the environment.
+
+If you are destroying locally with Azure CLI authentication, ensure your signed-in user has `Storage Blob Data Contributor` on the backend storage account so Terraform can access workspace state.
+
+Initialize the backend first:
+
+```bash
+az login
+export ARM_USE_CLI=true
+export ARM_USE_AZUREAD=true
+
+terraform init \
+  -backend-config="resource_group_name=rg-acme-tfstate" \
+  -backend-config="storage_account_name=stacmetfstatefed12f" \
+  -backend-config="container_name=tfstate" \
+  -backend-config="key=terraform.tfstate"
+```
+
+Destroy `dev`:
+
+```bash
+terraform workspace select dev
+terraform destroy \
+  -var='admin_ssh_public_key=<your-ssh-public-key>' \
+  -var='dev_admin_cidrs=["<your-current-public-ip>/32"]' \
+  -var='prod_admin_cidrs=[]'
+```
+
+Destroy `prod`:
+
+```bash
+terraform workspace select prod
+terraform destroy \
+  -var='admin_ssh_public_key=<your-ssh-public-key>' \
+  -var='dev_admin_cidrs=["<your-current-public-ip>/32"]' \
+  -var='prod_admin_cidrs=[]'
+```
+
+Use the same SSH key and admin CIDR values that were configured for the original deployment.
+
+Optional cleanup after both environments are destroyed:
+
+```bash
+terraform workspace select default
+terraform workspace delete dev
+terraform workspace delete prod
+```
+
+Delete the backend resource group only after all workspaces are destroyed if you want to remove the shared state infrastructure too.
+
 ## GitHub Actions Configuration
 
 Repository variables expected by the workflow:
