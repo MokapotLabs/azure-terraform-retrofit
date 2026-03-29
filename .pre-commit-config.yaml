@@ -8,7 +8,7 @@ repos:
         pass_filenames: false
       - id: tflint
         name: tflint
-        entry: bash -lc 'tflint --init >/dev/null && tflint --recursive'
+        entry: bash -lc 'tflint --init >/dev/null && TF_WORKSPACE=dev tflint --recursive'
         language: system
         pass_filenames: false
       - id: validate-dev

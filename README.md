@@ -168,7 +168,7 @@ pre-commit install
 The configured hooks run:
 
 - `terraform fmt -check -recursive`
-- `tflint --recursive`
+- `tflint --recursive` with `TF_WORKSPACE=dev`
 - `terraform validate` for the `dev` workspace
 - `terraform validate` for the `prod` workspace
 

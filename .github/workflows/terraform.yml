@@ -77,6 +77,8 @@ jobs:
         run: tflint --init
 
       - name: Run TFLint
+        env:
+          TF_WORKSPACE: dev
         run: tflint --recursive
 
       - name: Check module docs
