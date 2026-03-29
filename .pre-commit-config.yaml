@@ -1,0 +1,23 @@
+repos:
+  - repo: local
+    hooks:
+      - id: terraform-fmt
+        name: terraform fmt
+        entry: terraform fmt -check -recursive
+        language: system
+        pass_filenames: false
+      - id: tflint
+        name: tflint
+        entry: bash -lc 'tflint --init >/dev/null && tflint --recursive'
+        language: system
+        pass_filenames: false
+      - id: validate-dev
+        name: validate dev workspace
+        entry: bash -lc 'terraform init -backend=false -input=false >/dev/null && TF_WORKSPACE=dev terraform validate'
+        language: system
+        pass_filenames: false
+      - id: validate-prod
+        name: validate prod workspace
+        entry: bash -lc 'terraform init -backend=false -input=false >/dev/null && TF_WORKSPACE=prod terraform validate'
+        language: system
+        pass_filenames: false
