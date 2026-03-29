@@ -44,7 +44,7 @@ locals {
     location    = local.current_environment.location
     managed_by  = "terraform"
     project     = var.project_name
-    repository  = "azure-terraform-retrofit"
+    repository  = "azure-terraform"
   })
 
   ssh_rules = local.current_environment.enable_public_ip && length(local.current_environment.admin_cidrs) > 0 ? [

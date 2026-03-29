@@ -1,13 +1,20 @@
-# Azure Terraform Retrofit
+# Azure Terraform 
 
-This repository is the plain Terraform + GitHub Actions retrofit of the earlier Azure interview solution. It keeps the reusable VNet module and the `dev` / `prod` environments, but removes all HCP Terraform Stack, private registry, and component-configuration dependencies.
+This repository is the Terraform + GitHub Actions answer to the brief:
 
-## Architecture
+- build a **reusable Azure VNet module**
+- deploy **multiple Azure environments** using that module
+- add a couple of practical resources beyond networking
+- show a reasonable **GitHub-based CI/CD flow**
 
-- one root Terraform configuration at repo root
-- one vendored reusable VNet module under `modules/vnet/`
-- one Azure Blob `azurerm` backend configured manually outside Terraform
-- one GitHub Actions workflow that runs plain Terraform against the `dev` and `prod` CLI workspaces
+The brief and hints point toward reusable code, secure defaults, clear naming, useful outputs, and a defensible approach to environment separation. This repository addresses those expectations in the simplest review-friendly way:
+
+- a reusable local VNet module under `modules/vnet/`
+- one plain Terraform root that deploys `dev` and `prod`
+- environment differences driven by Terraform CLI workspaces instead of duplicated roots
+- Azure + GitHub OIDC auth
+- Azure Blob remote state
+- a GitHub Actions workflow for validation, planning, and controlled deployment
 
 Each workspace provisions:
 
@@ -16,11 +23,29 @@ Each workspace provisions:
 - one Linux VM
 - one Storage Account plus a private Blob container
 
-## Why This Version Exists
+## Engineering choices:
 
-This retrofit is the simpler, enterprise-friendlier path when HCP Terraform Stacks or private registry adoption is not realistic for cost, governance, or approval reasons.
+- reusable module design
+- environment-aware naming and tagging
+- remote state in Azure
+- GitHub OIDC instead of long-lived cloud secrets
+- a practical PR/plan/apply lifecycle
+- no HCP Terraform runtime dependency
+- no private module registry dependency
+- no paid orchestration layer
+- no component or Stack abstraction
 
-Compared with the Stack-based version:
+## Related Repos
+
+This repo sits alongside three related repositories that resolve the same brief using more 
+advanced variants:
+
+- VNet module repo: [MokapotLabs/terraform_iac_vnet](https://github.com/MokapotLabs/terraform_iac_vnet)
+- HCP-published component variant: [MokapotLabs/azure-terraform-example](https://github.com/MokapotLabs/azure-terraform-example)
+- HCP consumer Stack variant: [MokapotLabs/azure-terraform-consumer](https://github.com/MokapotLabs/azure-terraform-consumer)
+
+Those repositories show how a more advanced Terraform Cloud setup would be, using the [brand new Stacks feature]
+(https://www.hashicorp.com/en/blog/terraform-stacks-explained). Compared with the Stack-based version:
 
 - it remains self-contained
 - it keeps Azure + GitHub OIDC
@@ -33,8 +58,16 @@ Tradeoffs:
 - no Stack/component model
 - no HCP UI for staged deployments
 - no HCP deployment metadata or policy layer
+- and more
 
 The Azure Blob backend still gives you remote state and locking/consistency protection.
+
+## Architecture
+
+- one root Terraform configuration at repo root
+- one vendored reusable VNet module under `modules/vnet/`
+- one Azure Blob `azurerm` backend configured manually outside Terraform
+- one GitHub Actions workflow that runs plain Terraform against the `dev` and `prod` CLI workspaces
 
 ## Repository Layout
 
@@ -69,6 +102,10 @@ Environment-specific settings are selected from a single locals map keyed by `te
   - location: `westeurope`
   - location_short: `weu`
   - no public IP
+
+## Terraform "apply" and "destroy" logs
+
+Please see the [terraform apply log](APPLY-LOG.md) and the [terraform destroy log](DESTROY-LOG.md) logs for reference.
 
 ## Backend Prerequisite
 
