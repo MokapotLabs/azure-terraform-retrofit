@@ -44,8 +44,7 @@ advanced variants:
 - HCP-published component variant: [MokapotLabs/azure-terraform-example](https://github.com/MokapotLabs/azure-terraform-example)
 - HCP consumer Stack variant: [MokapotLabs/azure-terraform-consumer](https://github.com/MokapotLabs/azure-terraform-consumer)
 
-Those repositories show how a more advanced Terraform Cloud setup would be, using the [brand new Stacks feature]
-(https://www.hashicorp.com/en/blog/terraform-stacks-explained). Compared with the Stack-based version:
+Those repositories show how a more advanced Terraform Cloud setup would be, using the [brand new Stacks feature](https://www.hashicorp.com/en/blog/terraform-stacks-explained). Compared with the Stack-based version:
 
 - it remains self-contained
 - it keeps Azure + GitHub OIDC
