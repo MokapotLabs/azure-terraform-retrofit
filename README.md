@@ -236,6 +236,32 @@ GitHub environments:
 - `dev` for the automatic development apply
 - `prod` as a protected environment for the manual production promotion
 
+## Azure OIDC Bootstrap
+
+The workflow uses GitHub OIDC via `azure/login`. That means Azure must trust the exact GitHub repository and environment subjects that GitHub Actions will present.
+
+This repo includes [security.sh](/Users/mari/mokapot/azure-terraform-retrofit/security.sh) to create or update:
+
+- the Azure app registration
+- the service principal
+- the required federated credentials for `pull_request`, `environment:dev`, and `environment:prod`
+- the baseline RBAC assignments
+
+Example:
+
+```bash
+export TENANT_ID="<your-tenant-id>"
+export SUBSCRIPTION_ID="<your-subscription-id>"
+export GITHUB_OWNER="MokapotLabs"
+export GITHUB_REPO="azure-terraform"
+export TFSTATE_RESOURCE_GROUP="rg-acme-tfstate"
+export TFSTATE_STORAGE_ACCOUNT="stacmetfstatefed12f"
+
+./security.sh
+```
+
+If the repository name changes, the Azure federated credential subjects must be updated to match the new GitHub OIDC subject strings. A repo rename will otherwise break `azure/login` with `AADSTS700213` until the trust records are updated.
+
 ## Release Lifecycle
 
 The workflow keeps the original lightweight release flow:
